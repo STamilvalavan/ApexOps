@@ -26,7 +26,7 @@ export default function Sidebar() {
     <motion.div
       initial={{ x: -80, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
-      className="w-64 bg-[#020617] flex flex-col p-6 border-r border-gray-800 min-h-screen"
+      className="w-64 bg-[#020617] flex flex-col p-6 border-r border-gray-800 h-screen fixed left-0 top-0 z-50"
     >
       {/* Logo */}
       <h1 className="text-2xl font-bold mb-10 text-blue-400">ApexOps</h1>

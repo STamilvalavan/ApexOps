@@ -73,6 +73,8 @@ REST_FRAMEWORK = {
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+DATE_INPUT_FORMATS = ['%d/%m/%Y']
+
 ROOT_URLCONF = 'apexops_api.urls'
 
 TEMPLATES = [
