@@ -1,0 +1,7 @@
+Django==3.2.25
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.2.2
+django-cors-headers==3.6.0
+gunicorn==25.1.0
+
+# Add any other project-specific dependencies below
