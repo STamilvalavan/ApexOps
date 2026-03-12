@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import Layout from "../Components/layout/Layout";
 import API from "../services/api";
-import { formatDate } from "../utils/dateUtils";
+import { formatDate, formatDateForBackend } from "../utils/dateUtils";
 import { Calendar, Wallet, TrendingUp, History } from "lucide-react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "../datepicker.css";
 
 import {
   PieChart,
@@ -21,7 +24,8 @@ export default function Expenses() {
   const [formData, setFormData] = useState({
     category: "",
     amount: "",
-    description: ""
+    description: "",
+    date: new Date()
   });
 
   // Fetch expenses from backend
@@ -57,6 +61,13 @@ export default function Expenses() {
 
   };
 
+  const handleDateChange = (date) => {
+    setFormData({
+      ...formData,
+      date: date
+    });
+  };
+
   // Add new expense
   const handleSubmit = async (e) => {
 
@@ -64,12 +75,16 @@ export default function Expenses() {
 
     try {
 
-      await API.post("/expenses/create/", formData);
+      await API.post("/expenses/create/", {
+        ...formData,
+        date: formatDateForBackend(formData.date)
+      });
 
       setFormData({
         category: "",
         amount: "",
-        description: ""
+        description: "",
+        date: new Date()
       });
 
       fetchExpenses();
@@ -133,7 +148,7 @@ export default function Expenses() {
 
           <form
             onSubmit={handleSubmit}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-4 gap-6"
           >
 
             <div className="space-y-2">
@@ -160,6 +175,19 @@ export default function Expenses() {
             </div>
 
             <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-400">Date</label>
+              <div className="relative group">
+                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-focus-within:text-blue-500 transition-colors z-10" size={18} />
+                <DatePicker
+                  selected={formData.date}
+                  onChange={handleDateChange}
+                  dateFormat="dd/MM/yyyy"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl bg-[#0f172a] border border-gray-700 focus:border-blue-500 outline-none transition-all text-white appearance-none"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
               <label className="text-sm font-medium text-gray-400">Description</label>
               <input
                 name="description"
@@ -171,7 +199,7 @@ export default function Expenses() {
             </div>
 
             <button
-              className="md:col-span-3 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-500/20"
+              className="md:col-span-4 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-500/20"
             >
               Add Expense
             </button>

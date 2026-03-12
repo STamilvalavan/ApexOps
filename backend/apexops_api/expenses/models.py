@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 class Expense(models.Model):
 
@@ -14,7 +15,7 @@ class Expense(models.Model):
 
     description = models.TextField(blank=True)
 
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return f"{self.category} - {self.amount}"

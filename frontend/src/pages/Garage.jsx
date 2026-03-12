@@ -3,6 +3,10 @@ import Layout from "../Components/layout/Layout";
 import API from "../services/api";
 import { Bike, Save, CheckCircle, Gauge, Droplets, Link2, Disc, Wrench, Edit3, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "../datepicker.css";
+import { formatDateForBackend } from "../utils/dateUtils";
 
 export default function Garage() {
   const [bikeName, setBikeName] = useState("");
@@ -79,20 +83,20 @@ export default function Garage() {
       await API.put("/users/profile/", {
         bike_name: bikeName,
         bike_model: bikeModel,
-        engine_cc: parseInt(engineCC, 10),
-        average_mileage: parseFloat(averageMileage),
-        total_distance: parseInt(totalDistance, 10),
-        last_oil_service: lastOilService || null,
-        last_oil_service_kms: parseInt(lastOilServiceKms, 10),
+        engine_cc: parseInt(engineCC, 10) || 0,
+        average_mileage: parseFloat(averageMileage) || 0,
+        total_distance: parseInt(totalDistance, 10) || 0,
+        last_oil_service: formatDateForBackend(lastOilService),
+        last_oil_service_kms: parseInt(lastOilServiceKms, 10) || 0,
         last_oil_service_desc: lastOilServiceDesc,
-        chain_lube: chainLube || null,
-        chain_lube_kms: parseInt(chainLubeKms, 10),
+        chain_lube: formatDateForBackend(chainLube),
+        chain_lube_kms: parseInt(chainLubeKms, 10) || 0,
         chain_lube_desc: chainLubeDesc,
-        tyre_change: tyreChange || null,
-        tyre_change_kms: parseInt(tyreChangeKms, 10),
+        tyre_change: formatDateForBackend(tyreChange),
+        tyre_change_kms: parseInt(tyreChangeKms, 10) || 0,
         tyre_change_desc: tyreChangeDesc,
-        major_service: majorService || null,
-        major_service_kms: parseInt(majorServiceKms, 10),
+        major_service: formatDateForBackend(majorService),
+        major_service_kms: parseInt(majorServiceKms, 10) || 0,
         major_service_desc: majorServiceDesc,
       });
       setMessage("Bike details updated successfully!");
@@ -100,7 +104,11 @@ export default function Garage() {
       setTimeout(() => setMessage(""), 3000);
     } catch (err) {
       console.error("Error updating profile", err);
-      setMessage("Failed to update bike details.");
+      if (err.response?.status === 401) {
+        setMessage("Session expired. Please log in again.");
+      } else {
+        setMessage("Failed to update bike details.");
+      }
     } finally {
       setSaving(false);
     }
@@ -241,10 +249,10 @@ export default function Garage() {
                     </label>
                     <div className="relative group">
                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-                      <input
-                        type="date"
-                        value={lastOilService}
-                        onChange={(e) => setLastOilService(e.target.value)}
+                      <DatePicker
+                        selected={lastOilService ? new Date(lastOilService) : null}
+                        onChange={(date) => setLastOilService(date)}
+                        dateFormat="dd/MM/yyyy"
                         className="w-full pl-12 pr-4 py-4 rounded-xl bg-[#020617] border border-gray-700 focus:border-blue-500 outline-none transition-all text-white appearance-none"
                       />
                     </div>
@@ -286,10 +294,10 @@ export default function Garage() {
                     </label>
                     <div className="relative group">
                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-                      <input
-                        type="date"
-                        value={chainLube}
-                        onChange={(e) => setChainLube(e.target.value)}
+                      <DatePicker
+                        selected={chainLube ? new Date(chainLube) : null}
+                        onChange={(date) => setChainLube(date)}
+                        dateFormat="dd/MM/yyyy"
                         className="w-full pl-12 pr-4 py-4 rounded-xl bg-[#020617] border border-gray-700 focus:border-blue-500 outline-none transition-all text-white appearance-none"
                       />
                     </div>
@@ -331,10 +339,10 @@ export default function Garage() {
                     </label>
                     <div className="relative group">
                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-                      <input
-                        type="date"
-                        value={tyreChange}
-                        onChange={(e) => setTyreChange(e.target.value)}
+                      <DatePicker
+                        selected={tyreChange ? new Date(tyreChange) : null}
+                        onChange={(date) => setTyreChange(date)}
+                        dateFormat="dd/MM/yyyy"
                         className="w-full pl-12 pr-4 py-4 rounded-xl bg-[#020617] border border-gray-700 focus:border-blue-500 outline-none transition-all text-white appearance-none"
                       />
                     </div>
@@ -376,10 +384,10 @@ export default function Garage() {
                     </label>
                     <div className="relative group">
                       <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-400 group-focus-within:text-blue-500 transition-colors" size={18} />
-                      <input
-                        type="date"
-                        value={majorService}
-                        onChange={(e) => setMajorService(e.target.value)}
+                      <DatePicker
+                        selected={majorService ? new Date(majorService) : null}
+                        onChange={(date) => setMajorService(date)}
+                        dateFormat="dd/MM/yyyy"
                         className="w-full pl-12 pr-4 py-4 rounded-xl bg-[#020617] border border-gray-700 focus:border-blue-500 outline-none transition-all text-white appearance-none"
                       />
                     </div>
